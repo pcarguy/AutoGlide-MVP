@@ -1,22 +1,33 @@
 import streamlit as st
-from utils.quote_engine import calculate_quote
-from utils.pdf_generator import generate_pdf
+import sys
+import os
+from datetime import date
 
+# Ensure the 'utils' folder is on the import path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'utils'))
+
+from quote_engine import calculate_quote
+from pdf_generator import generate_pdf
+
+# Configure Streamlit page
 st.set_page_config(page_title="AutoGlide", layout="centered")
 
+# --- Branding ---
 st.markdown(
-    "<h1 style='color:#1DB954;'>AutoGlide</h1><h4 style='color:#B3B3B3;'>Nationwide vehicle shipping, simplified.</h4>",
+    "<h1 style='color:#1DB954;'>AutoGlide</h1>"
+    "<h4 style='color:#B3B3B3;'>Nationwide vehicle shipping, simplified.</h4>",
     unsafe_allow_html=True,
 )
 st.markdown("---")
 
+# --- Quote Form ---
 with st.form("quote_form"):
     st.subheader("Get Your Quote")
     pickup = st.text_input("Pickup ZIP Code")
     delivery = st.text_input("Delivery ZIP Code")
     vehicle_type = st.selectbox("Vehicle Type", ["Sedan", "SUV", "Truck", "Van"])
     transport_type = st.selectbox("Transport Type", ["Open", "Enclosed", "Inoperable", "Expedited"])
-    pickup_date = st.date_input("Pickup Date")
+    pickup_date = st.date_input("Pickup Date", value=date.today())
 
     submitted = st.form_submit_button("Calculate Quote")
 
@@ -36,6 +47,7 @@ if submitted:
     else:
         st.warning("Please enter both ZIP codes.")
 
+# --- Booking Form ---
 if st.session_state.get("show_booking"):
     st.markdown("---")
     st.subheader("Book Your Transport")
